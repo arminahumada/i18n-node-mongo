@@ -40,7 +40,8 @@ module.exports = (function() {
       'getCatalog': 'getCatalog',
       'getLocales': 'getLocales',
       'addLocale': 'addLocale',
-      'removeLocale': 'removeLocale'
+      'removeLocale': 'removeLocale',
+      'reloadLocale': 'reloadLocale'
     },
     pathsep = path.sep, // ---> means win support will be available in node 0.8.x and above
     autoReload,
@@ -60,7 +61,9 @@ module.exports = (function() {
     queryParameter,
     register,
     updateFiles,
-    syncFiles;
+    syncFiles,
+    readFn,
+    writeFn;
 
   // public exports
   var i18n = {};
@@ -174,6 +177,9 @@ module.exports = (function() {
         });
       }
     }
+
+    readFn = (typeof opt.readFn === 'function') ? opt.readFn : null;
+    writeFn = (typeof opt.writeFn === 'function') ? opt.writeFn : null;
   };
 
   i18n.init = function i18nInit(request, response, next) {
@@ -521,6 +527,11 @@ module.exports = (function() {
   i18n.removeLocale = function i18nRemoveLocale(locale) {
     delete locales[locale];
   };
+
+  i18n.reloadLocale = function i18nReloadLocale(locale) {
+    read(locale);
+  };
+
 
   // ===================
   // = private methods =
@@ -1074,6 +1085,18 @@ module.exports = (function() {
    * try reading a file
    */
   var read = function(locale) {
+
+    if(readFn){
+      logDebug('Using custom read function');
+      
+      readFn(locale).then(function(data){
+        logDebug('Got locale data from custom load');
+        locales[locale] = data;
+      });
+
+      return;
+    }
+
     var localeFile = {},
       file = getStorageFilePath(locale);
     try {
@@ -1106,6 +1129,7 @@ module.exports = (function() {
    * try writing a file in a created directory
    */
   var write = function(locale) {
+
     var stats, target, tmp;
 
     // don't write new locale information to disk if updateFiles isn't true
@@ -1125,6 +1149,12 @@ module.exports = (function() {
     if (!locales[locale]) {
       locales[locale] = {};
     }
+
+    if(writeFn){
+      logDebug('Using custom write function');
+      return writeFn(locale, locales[locale]);
+    }
+
 
     // writing to tmp and rename on success
     try {
