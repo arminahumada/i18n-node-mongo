@@ -1,5 +1,5 @@
 {
-  "name": "i18n-mongo",
+  "name": "i18n-custom-source",
   "description": "lightweight translation module with dynamic json storage",
   "version": "0.8.3",
   "homepage": "https://github.com/arminahumada/i18n-node-mongo",
