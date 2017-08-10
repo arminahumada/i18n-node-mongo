@@ -1,13 +1,13 @@
 {
-  "name": "i18n",
+  "name": "i18n-mongo",
   "description": "lightweight translation module with dynamic json storage",
   "version": "0.8.3",
-  "homepage": "http://github.com/mashpie/i18n-node",
+  "homepage": "https://github.com/arminahumada/i18n-node-mongo",
   "repository": {
     "type": "git",
-    "url": "http://github.com/mashpie/i18n-node.git"
+    "url": "https://github.com/arminahumada/i18n-node-mongo.git"
   },
-  "author": "Marcus Spiegel <marcus.spiegel@gmail.com>",
+  "author": "Armin Ahumada <armin.ahumada@gmail.com>",
   "main": "./index",
   "keywords": [
     "template",
